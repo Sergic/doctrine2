@@ -137,6 +137,11 @@ class LimitSubqueryOutputWalker extends SqlWalker
             ));
         }
 
+        // Build query with limit and offset before distincted query
+        $innerSql = $this->platform->modifyLimitQuery(
+            $innerSql, $this->maxResults, $this->firstResult
+        );
+
         // Build the counter query.
         $sql = sprintf('SELECT DISTINCT %s FROM (%s) dctrn_result',
             implode(', ', $sqlIdentifier), $innerSql);
@@ -147,9 +152,9 @@ class LimitSubqueryOutputWalker extends SqlWalker
         }
 
         // Apply the limit and offset.
-        $sql = $this->platform->modifyLimitQuery(
-            $sql, $this->maxResults, $this->firstResult
-        );
+        //$sql = $this->platform->modifyLimitQuery(
+        //    $sql, $this->maxResults, $this->firstResult
+        //);
 
         // Add the columns to the ResultSetMapping. It's not really nice but
         // it works. Preferably I'd clear the RSM or simply create a new one
